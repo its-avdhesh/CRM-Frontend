@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import "@/App.css";
 import {
   Accordion,
@@ -173,259 +173,38 @@ const Navigation = () => {
   );
 };
 
-// NoPaperForms Widget Component
-const NoPaperFormsWidget = () => {
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  useEffect(() => {
-    // Initialize the widget when component mounts
-    const initializeWidget = () => {
-      const container = document.getElementById('npf-widget-container');
-      if (!container) return;
-
-      // Clear previous content
-      container.innerHTML = '';
-
-      // Create the widget div
-      const widgetDiv = document.createElement('div');
-      widgetDiv.className = 'npf_wgts';
-      widgetDiv.setAttribute('data-height', '400px');
-      widgetDiv.setAttribute('data-w', '1242a8cbbc551970993f589ee9febba6');
-      
-      container.appendChild(widgetDiv);
-
-      // Wait a bit for the DOM to update, then trigger script reload
-      setTimeout(() => {
-        // Try to re-initialize NoPaperForms if the function exists
-        if (window.npf && window.npf.init) {
-          window.npf.init();
-        } else {
-          // If npf doesn't exist, reload the script
-          const existingScript = document.querySelector('script[src*="emwgts.js"]');
-          if (existingScript) {
-            existingScript.remove();
-          }
-          
-          const script = document.createElement('script');
-          script.type = 'text/javascript';
-          script.async = true;
-          script.src = 'https://widgets.nopaperforms.com/emwgts.js';
-          document.body.appendChild(script);
-        }
-        
-        setIsInitialized(true);
-
-        // Check the agreement checkbox after widget loads
-        const checkAgreementCheckbox = () => {
-          const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-          checkboxes.forEach(checkbox => {
-            // Check if it's the specific agreement checkbox
-            const parentText = checkbox.parentElement?.textContent || '';
-            const nextSiblingText = checkbox.nextSibling?.textContent || '';
-            
-            if (parentText.includes('I agree to receive information') || 
-                nextSiblingText.includes('I agree to receive information') ||
-                parentText.includes('agree to receive') ||
-                nextSiblingText.includes('agree to receive')) {
-              
-              // Programmatically check the checkbox
-              checkbox.checked = true;
-              checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-              checkbox.dispatchEvent(new Event('click', { bubbles: true }));
-              
-              console.log('Agreement checkbox checked programmatically');
-            }
-          });
-        };
-
-        // Try to check the agreement checkbox multiple times
-        setTimeout(checkAgreementCheckbox, 500);
-        setTimeout(checkAgreementCheckbox, 1000);
-        setTimeout(checkAgreementCheckbox, 2000);
-        setTimeout(checkAgreementCheckbox, 3000);
-      }, 200);
-    };
-
-    initializeWidget();
-  }, []);
-
-  return (
-    <div 
-      id="npf-widget-container" 
-      style={{ 
-        minHeight: '400px', 
-        width: '100%',
-        position: 'relative',
-        backgroundColor: '#A21D2E', // Red background matching website
-        borderRadius: '1.5rem',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        padding: '0'
-      }}
-      className={isInitialized ? 'npf-initialized' : ''}
-    >
-      {!isInitialized && (
-        <div className="flex items-center justify-center h-96 text-gray-500">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#283887] mx-auto mb-2"></div>
-            <p>Loading form...</p>
-          </div>
-        </div>
-      )}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          #npf-widget-container, #npf-widget-container * {
-            color: white !important;
-            background-color: transparent !important;
-            font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-          }
-          #npf-widget-container {
-            background: #A21D2E !important;
-            border-radius: 1.5rem !important;
-          }
-          #npf-widget-container input[type="text"], 
-          #npf-widget-container input[type="email"], 
-          #npf-widget-container input[type="tel"], 
-          #npf-widget-container select, 
-          #npf-widget-container textarea {
-            color: #1e293b !important;
-            background-color: white !important;
-            border: 1px solid #475569 !important;
-            border-radius: 0.75rem !important;
-            padding: 12px 16px !important;
-            font-size: 16px !important;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-          }
-          #npf-widget-container input[type="text"]:focus, 
-          #npf-widget-container input[type="email"]:focus, 
-          #npf-widget-container input[type="tel"]:focus, 
-          #npf-widget-container select:focus, 
-          #npf-widget-container textarea:focus {
-            border-color: #283887 !important;
-            outline: none !important;
-            box-shadow: 0 0 0 3px rgba(40, 56, 135, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-          }
-          #npf-widget-container label {
-            color: white !important;
-            font-weight: 600 !important;
-            font-size: 14px !important;
-            margin-bottom: 6px !important;
-            display: block !important;
-          }
-          #npf-widget-container span {
-            color: white !important;
-            font-weight: 500 !important;
-          }
-          #npf-widget-container p {
-            color: white !important;
-            font-weight: 500 !important;
-          }
-          #npf-widget-container div {
-            color: white !important;
-          }
-          #npf-widget-container button, #npf-widget-container input[type="submit"], #npf-widget-container input[type="button"] {
-            background: #283887 !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 0.75rem !important;
-            padding: 12px 24px !important;
-            font-size: 16px !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 2px 4px rgba(40, 56, 135, 0.2) !important;
-          }
-          #npf-widget-container button:hover, 
-          #npf-widget-container input[type="submit"]:hover, 
-          #npf-widget-container input[type="button"]:hover {
-            background: #1e2a5a !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 8px rgba(40, 56, 135, 0.3) !important;
-          }
-          #npf-widget-container div {
-            margin-bottom: 16px !important;
-          }
-          #npf-widget-container .npf_wgts {
-            background: transparent !important;
-            padding: 0 !important;
-          }
-          #npf-widget-container input[type="checkbox"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          #npf-widget-container input[type="checkbox"]:not([class]):not([id]) {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          #npf-widget-container input[type="checkbox"][style*="position: absolute"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          #npf-widget-container * input[type="checkbox"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          #npf-widget-container div:has(input[type="checkbox"]) {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          #npf-widget-container div:has(input[type="checkbox"]) * {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          #npf-widget-container [class*="captcha"] input[type="checkbox"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-          #npf-widget-container [class*="captcha"] div:has(input[type="checkbox"]) {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-          }
-        `
-      }} />
-    </div>
-  );
-};
+ // NoPaperForms Widget Component - Fast loading (cacheable iframe)
+ const NoPaperFormsWidget = () => {
+   return (
+     <div 
+       id="npf-widget-container" 
+       style={{ 
+         minHeight: '400px', 
+         width: '100%',
+         position: 'relative',
+         backgroundColor: '#A21D2E',
+         borderRadius: '1.5rem',
+         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+         padding: '0',
+         overflow: 'hidden'
+       }}
+     >
+       <iframe
+         src="/npf-widget.html"
+         loading="eager"
+         fetchPriority="high"
+         style={{
+           width: '100%',
+           height: '400px',
+           border: 'none',
+           borderRadius: '1.5rem',
+           backgroundColor: 'transparent'
+         }}
+         title="CRM Form"
+       />
+     </div>
+   );
+ };
 
 // Hero Section
 const HeroSection = () => {
