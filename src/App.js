@@ -1414,6 +1414,48 @@ const Footer = () => {
 
 // Main App Component
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Set a minimum loading time to prevent flash
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: '#f8fafc',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+      }}>
+        <div style={{
+          width: '60px',
+          height: '60px',
+          border: '4px solid #e2e8f0',
+          borderTop: '4px solid #283887',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          marginBottom: '20px'
+        }}></div>
+        <h1 style={{ color: '#283887', marginBottom: '10px' }}>Medicaps University</h1>
+        <p style={{ color: '#64748b' }}>Global Dual Degree Programs</p>
+        <style jsx>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
     <div className="App" data-testid="app-container">
       {/* Skip to main content link for accessibility */}
