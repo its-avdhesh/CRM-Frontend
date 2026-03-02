@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
+import { motion } from "framer-motion";
 import "@/App.css";
-import {
+import NpfWidget from "@/components/NpfWidget";
+import { 
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -20,8 +22,6 @@ import {
   CheckCircle2,
   Building2,
   FileText,
-  Mail,
-  Phone,
   Menu,
   X,
   ExternalLink,
@@ -29,8 +29,26 @@ import {
   Target,
   TrendingUp,
   HeartHandshake,
-  Star
+  Phone,
+  Star,
+  Mail
 } from "lucide-react";
+
+// Animation Variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
 
 // Official Partner Logos from their websites
 const WoosongLogo = ({ size = "default" }) => (
@@ -173,38 +191,6 @@ const Navigation = () => {
   );
 };
 
- // NoPaperForms Widget Component - Fast loading (cacheable iframe)
- const NoPaperFormsWidget = () => {
-   return (
-     <div 
-       id="npf-widget-container" 
-       style={{ 
-         minHeight: '400px', 
-         width: '100%',
-         position: 'relative',
-         backgroundColor: '#A21D2E',
-         borderRadius: '1.5rem',
-         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-         padding: '0',
-         overflow: 'hidden'
-       }}
-     >
-       <iframe
-         src="/npf-widget.html"
-         loading="eager"
-         fetchPriority="high"
-         style={{
-           width: '100%',
-           height: '400px',
-           border: 'none',
-           borderRadius: '1.5rem',
-           backgroundColor: 'transparent'
-         }}
-         title="CRM Form"
-       />
-     </div>
-   );
- };
 
 // Hero Section
 const HeroSection = () => {
@@ -214,24 +200,28 @@ const HeroSection = () => {
       <div className="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
-          <div className="animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#283887]/10 rounded-full mb-6">
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 bg-[#283887]/10 rounded-full mb-6">
               <Globe2 className="w-4 h-4 text-[#283887]" />
               <span className="text-sm font-medium text-[#283887]">International Dual Degree Programs</span>
-            </div>
+            </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <motion.h1 variants={fadeInUp} className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               One Degree.<br />
               <span className="gradient-text">Two Countries.</span><br />
               Global Careers.
-            </h1>
+            </motion.h1>
             
-            <p className="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
+            <motion.p variants={fadeInUp} className="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
               Start at Medicaps University, finish at a top global university. 
               Gain international exposure and dual credentials that set you apart.
-            </p>
+            </motion.p>
             
-            <div className="flex flex-wrap gap-4 mb-10">
+            <motion.div variants={fadeInUp} className="flex flex-wrap gap-4 mb-10">
               <a href="#programs" className="btn-primary" data-testid="hero-explore-btn">
                 Explore Programs <ChevronRight className="w-5 h-5" />
               </a>
@@ -244,10 +234,10 @@ const HeroSection = () => {
               >
                 <FileText className="w-5 h-5" /> Download Brochure
               </a>
-            </div>
+            </motion.div>
             
             {/* Country Flags - Global Reach */}
-            <div className="flex items-center gap-4 flex-wrap">
+            <motion.div variants={fadeInUp} className="flex items-center gap-4 flex-wrap">
               <span className="text-sm text-gray-500">Study destinations:</span>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/80 rounded-full shadow-sm">
@@ -267,11 +257,16 @@ const HeroSection = () => {
                   <span className="text-xs font-medium text-gray-700">Malaysia</span>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
           
           {/* Right - CRM Form Placeholder */}
-          <div className="animate-fade-in-up delay-200" id="hero-form">
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            id="hero-form"
+          >
             <div className="rounded-3xl p-8 shadow-2xl" style={{ backgroundColor: '#A21D2E' }} data-testid="crm-form-placeholder">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#283887] to-[#A21D2E] flex items-center justify-center">
@@ -283,14 +278,14 @@ const HeroSection = () => {
               
               {/* NoPaperForms Widget */}
               <div className="crm-form-widget" data-testid="crm-embed-area">
-                <NoPaperFormsWidget />
+                <NpfWidget />
               </div>
               
               <p className="text-xs text-center text-gray-400 mt-4">
                 By submitting, you agree to our privacy policy and terms of service.
               </p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -308,9 +303,15 @@ const QuoteSection = () => {
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="grid lg:grid-cols-2 gap-12 items-center"
+        >
           {/* Quote */}
-          <div className="text-center lg:text-left">
+          <motion.div variants={fadeInUp} className="text-center lg:text-left">
             <div className="inline-block mb-6 bg-white rounded-xl p-3 shadow-lg">
               <img 
                 src="https://www.medicaps.ac.in/public/frontend/images/medicaps-logo-fin.webp" 
@@ -324,10 +325,10 @@ const QuoteSection = () => {
             <p className="text-white/70 text-lg">
               — Medicaps University, Shaping Global Leaders Since 2000
             </p>
-          </div>
+          </motion.div>
           
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-6">
+          <motion.div variants={fadeInUp} className="grid grid-cols-2 gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20 hover:bg-white/20 transition-colors">
               <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-white/20 flex items-center justify-center">
                 <Globe2 className="w-7 h-7 text-white" />
@@ -356,8 +357,8 @@ const QuoteSection = () => {
               <div className="text-4xl font-bold text-white mb-1">24+</div>
               <div className="text-white/70 text-sm">Years of Excellence</div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
@@ -401,22 +402,34 @@ const USPsSection = () => {
   return (
     <section className="py-20 md:py-28 bg-white" data-testid="usps-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-[#A21D2E]/10 rounded-full text-[#A21D2E] text-sm font-semibold mb-4">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="text-center mb-16"
+        >
+          <motion.span variants={fadeInUp} className="inline-block px-4 py-2 bg-[#A21D2E]/10 rounded-full text-[#A21D2E] text-sm font-semibold mb-4">
             Why Choose Us
-          </span>
-          <h2 className="section-title">Why Global Programs at Medicaps?</h2>
-          <p className="section-subtitle mx-auto">
+          </motion.span>
+          <motion.h2 variants={fadeInUp} className="section-title">Why Global Programs at Medicaps?</motion.h2>
+          <motion.p variants={fadeInUp} className="section-subtitle mx-auto">
             Discover the unique advantages that make our dual degree programs stand out.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
         
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {usps.map((usp, index) => (
-            <div 
+            <motion.div 
+              variants={fadeInUp}
               key={index} 
               className="usp-card"
-              style={{ animationDelay: `${index * 100}ms` }}
               data-testid={`usp-card-${index}`}
             >
               <div className="usp-icon text-[#283887]">
@@ -424,9 +437,9 @@ const USPsSection = () => {
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">{usp.title}</h3>
               <p className="text-gray-600 text-sm leading-relaxed">{usp.description}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -470,17 +483,29 @@ const PartnersSection = () => {
   return (
     <section id="partners" className="py-20 md:py-28 bg-gray-50" data-testid="partners-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-[#283887]/10 rounded-full text-[#283887] text-sm font-semibold mb-4">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="text-center mb-16"
+        >
+          <motion.span variants={fadeInUp} className="inline-block px-4 py-2 bg-[#283887]/10 rounded-full text-[#283887] text-sm font-semibold mb-4">
             Global Network
-          </span>
-          <h2 className="section-title">Our University Partners</h2>
-          <p className="section-subtitle mx-auto">
+          </motion.span>
+          <motion.h2 variants={fadeInUp} className="section-title">Our University Partners</motion.h2>
+          <motion.p variants={fadeInUp} className="section-subtitle mx-auto">
             Collaborate with world-class institutions across Asia and Europe.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={staggerContainer}
+          className="grid md:grid-cols-3 gap-8"
+        >
           {partners.map((partner, index) => (
             <a 
               key={index} 
@@ -503,7 +528,7 @@ const PartnersSection = () => {
               </div>
             </a>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -613,19 +638,32 @@ const ProgramsSection = () => {
   return (
     <section id="programs" className="py-20 md:py-28" data-testid="programs-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-[#A21D2E]/10 rounded-full text-[#A21D2E] text-sm font-semibold mb-4">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="text-center mb-16"
+        >
+          <motion.span variants={fadeInUp} className="inline-block px-4 py-2 bg-[#A21D2E]/10 rounded-full text-[#A21D2E] text-sm font-semibold mb-4">
             Study Pathways
-          </span>
-          <h2 className="section-title">Programs & Study Pathways</h2>
-          <p className="section-subtitle mx-auto">
+          </motion.span>
+          <motion.h2 variants={fadeInUp} className="section-title">Programs & Study Pathways</motion.h2>
+          <motion.p variants={fadeInUp} className="section-subtitle mx-auto">
             Choose your path to a global career with our structured dual degree programs.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
         
-        <div className="space-y-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={staggerContainer}
+          className="space-y-10"
+        >
           {programs.map((program, pIndex) => (
-            <div 
+            <motion.div 
+              variants={fadeInUp}
               key={pIndex} 
               className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100"
               data-testid={`program-${program.color}`}
@@ -726,9 +764,9 @@ const ProgramsSection = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -763,17 +801,22 @@ const CompetenciesSection = () => {
     <section className="py-20 md:py-28 bg-gray-50" data-testid="competencies-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block px-4 py-2 bg-[#283887]/10 rounded-full text-[#283887] text-sm font-semibold mb-4">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
+            <motion.span variants={fadeInUp} className="inline-block px-4 py-2 bg-[#283887]/10 rounded-full text-[#283887] text-sm font-semibold mb-4">
               Graduate Outcomes
-            </span>
-            <h2 className="section-title mb-6">Key Competencies You'll Gain</h2>
-            <p className="text-gray-600 text-lg mb-8">
+            </motion.span>
+            <motion.h2 variants={fadeInUp} className="section-title mb-6">Key Competencies You'll Gain</motion.h2>
+            <motion.p variants={fadeInUp} className="text-gray-600 text-lg mb-8">
               Our dual degree programs are designed to equip you with competencies 
               that matter in today's global marketplace.
-            </p>
+            </motion.p>
             
-            <div className="grid sm:grid-cols-2 gap-4">
+            <motion.div variants={fadeInUp} className="grid sm:grid-cols-2 gap-4">
               {competencies.map((comp, index) => (
                 <div 
                   key={index} 
@@ -789,10 +832,16 @@ const CompetenciesSection = () => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
           
-          <div className="relative">
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
             <img 
               src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=500&h=400&fit=crop&auto=format&q=75"
               alt="Students collaborating on project"
@@ -819,7 +868,7 @@ const CompetenciesSection = () => {
                 <span className="font-bold">4 Countries</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -849,35 +898,51 @@ const AdmissionsSection = () => {
   return (
     <section id="admissions" className="py-20 md:py-28 bg-gray-50" data-testid="admissions-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-[#A21D2E]/10 rounded-full text-[#A21D2E] text-sm font-semibold mb-4">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="text-center mb-16"
+        >
+          <motion.span variants={fadeInUp} className="inline-block px-4 py-2 bg-[#A21D2E]/10 rounded-full text-[#A21D2E] text-sm font-semibold mb-4">
             Get Started
-          </span>
-          <h2 className="section-title">Admissions & Scholarships</h2>
-          <p className="section-subtitle mx-auto">
+          </motion.span>
+          <motion.h2 variants={fadeInUp} className="section-title">Admissions & Scholarships</motion.h2>
+          <motion.p variants={fadeInUp} className="section-subtitle mx-auto">
             Your journey to a global education starts here. Follow these simple steps.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
         
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Timeline */}
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">Application Process</h3>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
+            <motion.h3 variants={fadeInUp} className="text-2xl font-bold text-gray-900 mb-8">Application Process</motion.h3>
             <div className="space-y-6">
               {steps.map((item, index) => (
-                <div key={index} className="timeline-item" data-testid={`admission-step-${index}`}>
+                <motion.div variants={fadeInUp} key={index} className="timeline-item" data-testid={`admission-step-${index}`}>
                   <div className="timeline-dot">{item.step}</div>
                   <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
                     <h4 className="font-semibold text-gray-900 mb-1">{item.title}</h4>
                     <p className="text-sm text-gray-600">{item.description}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
           
           {/* Scholarships */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+          >
             <h3 className="text-2xl font-bold text-gray-900 mb-8">Scholarship Categories</h3>
             <div className="bg-white rounded-2xl p-8 shadow-lg">
               <div className="flex items-center gap-3 mb-6">
@@ -917,7 +982,7 @@ const AdmissionsSection = () => {
                 </a>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -956,19 +1021,32 @@ const TestimonialsSection = () => {
   return (
     <section className="py-20 md:py-28" data-testid="testimonials-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-[#283887]/10 rounded-full text-[#283887] text-sm font-semibold mb-4">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="text-center mb-16"
+        >
+          <motion.span variants={fadeInUp} className="inline-block px-4 py-2 bg-[#283887]/10 rounded-full text-[#283887] text-sm font-semibold mb-4">
             Success Stories
-          </span>
-          <h2 className="section-title">What Our Alumni Say</h2>
-          <p className="section-subtitle mx-auto">
+          </motion.span>
+          <motion.h2 variants={fadeInUp} className="section-title">What Our Alumni Say</motion.h2>
+          <motion.p variants={fadeInUp} className="section-subtitle mx-auto">
             Hear from students who transformed their careers through our programs.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={staggerContainer}
+          className="grid md:grid-cols-3 gap-8"
+        >
           {testimonials.map((testimonial, index) => (
-            <div 
+            <motion.div 
+              variants={fadeInUp}
               key={index} 
               className="testimonial-card"
               data-testid={`testimonial-${index}`}
@@ -1000,9 +1078,9 @@ const TestimonialsSection = () => {
                   <span className="text-xl font-bold text-[#A21D2E]">{testimonial.package}</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -1225,7 +1303,7 @@ function App() {
         }}></div>
         <h1 style={{ color: '#283887', marginBottom: '10px' }}>Medicaps University</h1>
         <p style={{ color: '#64748b' }}>Global Dual Degree Programs</p>
-        <style jsx>{`
+        <style jsx="true">{`
           @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
